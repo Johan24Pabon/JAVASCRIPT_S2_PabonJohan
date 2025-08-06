@@ -9,31 +9,26 @@ function buscarPersonaje() {
     xhr.open("GET", url, true);
 
     xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {  // <-- Añadido chequeo correcto del estado de respuesta
+            try {
+                const daticos = JSON.parse(xhr.responseText);
+                console.log(daticos);
 
-
-        try {
-            const daticos = JSON.parse(xhr.responseText);
-
-            console.log(daticos);
-
-            if (daticos.results && daticos.results.length > 0) {
-                for (let i = 0; i < daticos.results.length; i++) {
-                    let division = document.getElementById("resultados");
-                    division.innerHTML += `
-                        <div class="card">
-            <img src="${daticos["results"][i]["image"][i]["url"]}" alt="">
-            <h3>${daticos["results"][i]["name"]}</h3>
-            <p><strong>Status:</strong>${daticos["results"][i]["status"]}</p>
-            <p><strong>Specie:</strong>${daticos["results"][i]["species"]}</p> 
-                        `
+                if (daticos.results && daticos.results.length > 0) {  // <-- Cambié & por &&
+                    for (let i = 0; i < daticos.results.length; i++) {
+                        let division = document.getElementById("resultados");
+                        division.innerHTML += `
+                            <div class="card">
+                                <img src="${daticos["results"][i]["image"]["url"]}" alt="">
+                                <h3>${daticos["results"][i]["name"]}</h3>
+                            </div>  <!-- Cerré el div que faltaba -->
+                        `;
+                    }
                 }
+            } catch (err) {
+                console.log(err.message);
             }
-
         }
-        catch (err) {
-            console.log(err.message);
-        }
-
     };
     xhr.send();
 }
